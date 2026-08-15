@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mazien — Every World I've Built</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --paper:#ffffff;
+    --muted:#5a5a5a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding-top:64px;background:var(--paper);color:var(--ink);
+    font-family:'Poppins',sans-serif;overflow-x:hidden;}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:400;margin:0;}
+  a{text-decoration:none;color:inherit;}
+  .container{width:min(1100px,calc(100% - 40px));margin:0 auto;}
+
+  /* ===== STICKY NAV — small glowing logo, back to top ===== */
+  .navbar{
+    position:fixed;top:0;left:0;width:100%;z-index:500;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;
+    background:rgba(5,5,5,0.75);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  .navbar .nav-logo{
+    width:38px;height:38px;object-fit:contain;
+    filter:drop-shadow(0 0 10px rgba(255,255,255,0.55)) drop-shadow(0 0 22px rgba(255,255,255,0.3));
+  }
+  .navbar .back-top{
+    color:#fff;font-size:0.85rem;font-weight:600;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);
+    padding:9px 18px;border-radius:999px;cursor:pointer;
+    display:flex;align-items:center;gap:6px;
+  }
+
+  /* ===== HERO — the only dark section, with floating particles ===== */
+  .hero{
+    background:#050505;
+    color:#fff;
+    position:relative;
+    min-height:82vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    overflow:hidden;
+    padding:60px 24px;
+  }
+  #hero-particles{position:absolute;inset:0;pointer-events:none;}
+
+  /* Large hero visual — separate from the small nav logo,
+     meant to dominate the screen */
+  .hero-visual{
+    width:min(560px,86vw);
+    margin:36px auto 0;
+    position:relative;z-index:2;
+  }
+  .hero-visual img{
+    width:100%;height:auto;display:block;
+    filter:drop-shadow(0 20px 50px rgba(0,0,0,0.65)) drop-shadow(0 0 60px rgba(255,255,255,0.1));
+  }
+  .hero h1{
+    font-size:clamp(2.4rem,6vw,4.6rem);
+    line-height:1.05;
+    letter-spacing:-0.02em;
+    max-width:820px;
+    position:relative;z-index:2;
+  }
+  .hero p{
+    margin-top:22px;
+    color:rgba(255,255,255,0.6);
+    font-size:1.05rem;
+    max-width:560px;
+    position:relative;z-index:2;
+  }
+
+  /* ===== TEXT FLOAT-IN ===== */
+  .reveal-stagger h2,
+  .reveal-stagger p,
+  .reveal-stagger .eyebrow{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal-stagger.in-view .eyebrow{opacity:1;transform:translateY(0);transition-delay:0s}
+  .reveal-stagger.in-view h2{opacity:1;transform:translateY(0);transition-delay:.1s}
+  .reveal-stagger.in-view p{opacity:1;transform:translateY(0);transition-delay:.2s}
+
+  /* ===== SECTIONS ON WHITE ===== */
+  section.section{padding:70px 0;}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:0.16em;font-size:0.72rem;
+    font-weight:600;color:var(--muted);margin-bottom:10px;
+  }
+  .section-title{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:14px;}
+  .section-sub{color:var(--muted);max-width:600px;margin-bottom:40px;font-size:1rem;}
+
+  /* ===== CARD GRID ===== */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:26px;
+  }
+  .card{
+    background:var(--ink);
+    color:#fff;
+    border-radius:18px;
+    padding:26px;
+    cursor:pointer;
+    box-shadow:0 14px 34px rgba(0,0,0,0.18);
+    transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+    display:flex;
+    flex-direction:column;
+    min-height:230px;
+  }
+  .card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 22px 44px rgba(0,0,0,0.28);
+  }
+  .card .tag{
+    font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;
+    color:rgba(255,255,255,0.5);margin-bottom:10px;font-weight:600;
+  }
+  .card h3{
+    font-family:'Poppins',sans-serif;font-weight:600;
+    font-size:1.28rem;line-height:1.25;margin-bottom:10px;
+  }
+  .card p{
+    color:rgba(255,255,255,0.72);
+    font-size:0.92rem;line-height:1.55;
+    flex-grow:1;
+  }
+  .card .open{
+    margin-top:16px;font-size:0.85rem;font-weight:600;
+    color:#fff;display:inline-flex;align-items:center;gap:6px;
+  }
+  .card .card-logo{
+    width:36px;height:36px;object-fit:contain;
+    margin-bottom:14px;
+    filter:drop-shadow(0 6px 14px rgba(0,0,0,0.5));
+  }
+
+  /* ===== STORY OVERLAY ===== */
+  .overlay{
+    position:fixed;inset:0;background:rgba(10,10,10,0.92);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;z-index:999;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .35s ease,visibility .35s ease;
+  }
+  .overlay.show{opacity:1;visibility:visible;pointer-events:auto;}
+  .overlay-content{
+    background:#0a0a0a;color:#fff;border-radius:22px;
+    max-width:640px;width:100%;padding:36px;
+    max-height:86vh;overflow-y:auto;
+    box-shadow:0 30px 70px rgba(0,0,0,0.5);
+    position:relative;
+  }
+  .overlay-close{
+    position:absolute;top:18px;right:18px;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:1.2rem;
+  }
+  .overlay-content .tag{color:rgba(255,255,255,0.5);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+  .overlay-content h2{font-family:'Poppins',sans-serif;font-weight:600;font-size:1.7rem;margin-bottom:16px;}
+  .overlay-content p{color:rgba(255,255,255,0.78);line-height:1.75;margin-bottom:22px;font-size:1rem;}
+  .overlay-content .visit{
+    display:inline-block;background:#fff;color:#0a0a0a;
+    padding:12px 26px;border-radius:999px;font-weight:600;font-size:0.92rem;
+  }
+
+  /* ===== IFRAME SHOWCASE (Canva only) ===== */
+  .iframe-wrap{
+    background:var(--ink);border-radius:22px;overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.2);
+  }
+  .iframe-wrap iframe{
+    width:100%;aspect-ratio:16/9;border:0;display:block;
+  }
+  .iframe-caption{padding:26px 30px;color:#fff;}
+  .iframe-caption h3{font-family:'Poppins',sans-serif;font-weight:600;font-size:1.3rem;margin-bottom:8px;}
+  .iframe-caption p{color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.6;}
+
+  /* ===== MANIFESTO ===== */
+  .manifesto{
+    background:var(--ink);color:#fff;padding:90px 24px;text-align:center;
+  }
+  .manifesto h2{font-size:clamp(1.9rem,4.5vw,3rem);max-width:760px;margin:0 auto 24px;line-height:1.2;}
+  .manifesto p{color:rgba(255,255,255,0.65);max-width:620px;margin:0 auto;font-size:1.05rem;line-height:1.8;}
+
+  footer{padding:34px 24px;text-align:center;color:var(--muted);font-size:0.85rem;}
+</style>
+</head>
+<body>
+
+<!-- ===== STICKY NAV — small glowing logo, back to top ===== -->
+<nav class="navbar">
+  <!-- CHANGEABLE: your hand+star logo, small and glowing -->
+  <img src="assets/images/hand-star-logo.png" alt="Logo" class="nav-logo">
+  <span class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</span>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <canvas id="hero-particles"></canvas>
+  <h1>I don't build one thing.<br>I build every world I carry.</h1>
+  <p>Founder, graphic designer, and builder of spaces for people who were told to shrink. Every link below is real, built alone, over years — this is the whole picture, not a highlight reel.</p>
+  <!-- CHANGEABLE: large hero visual, meant to dominate the screen -->
+  <div class="hero-visual">
+    <img src="assets/images/mazien-portrait.png.png" alt="">
+  </div>
+</section>
+  
+<!-- ===== CANVA IFRAME — the one live embed ===== -->
+<section class="section container">
+  <div class="iframe-wrap">
+    <iframe src="https://www.canva.com/design/DAGLbKnHs_U/NF1FkczM92d0D5OCuKZX2A/view?embed" allowfullscreen></iframe>
+    <div class="iframe-caption">
+
+      
+    <h3>Mazien Archie in AI Prophecy </h3>
+       <p>Explore Mazien Eseh O. Archie through a visual presentation of AI photography.</p>
+    <p>Years of AI-generated images that turned out to be quiet prophecy — early versions of a future self that's since become real. Built to show that AI, used with good intention, is just another tool for good.</p>
+   
+  
+  </div>
+</section>
+  
+<!-- ===== 97 FOUNDER ===== -->
+<section class="section container">
+  <div class="grid" id="grid1"></div>
+</section>
+
+<!-- ===== CANVA IFRAME — the one live embed ===== -->
+<section class="section container">
+  <div class="iframe-wrap">
+    <iframe src="https://www.canva.com/design/DAGJWpbBSwM/tv0EOCYSngmNeCRpzpOkUg/view?embed" allowfullscreen></iframe>
+    <div class="iframe-caption">
+      <h3>Invisible Strength</h3>
+      <p>
+
+What if you met the mind before you met the person?
+
+A glimpse into an ADHD mind — the way it sees, feels, connects, creates, questions, and experiences the world.
+
+No name to shape your first impression. No label to tell you what to think.
+
+Just a person, seen from the inside.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MANIFESTO ===== -->
+<section class="manifesto reveal-stagger">
+  <div class="eyebrow">Why any of this exists</div>
+  <h2>Love is infinite intelligence. It never repeats itself — and neither does anyone here.</h2>
+  <p>This isn't a philosophy performed for anyone. It's how I actually live. I don't believe in classes, in people being worth less than others, in diversity being something to correct rather than witness. Everything on this page was built without income, without much support, because the passion never needed permission to keep going. If something here moves you, I'm glad. If it doesn't, that was never in my hands to control — only to offer, honestly, exactly as it is.</p>
+</section>
+
+<footer>Mazien · Seen Through Visuals · World Within · Built with love, not permission.</footer>
+
+<!-- ===== STORY OVERLAY ===== -->
+<div class="overlay" id="storyOverlay">
+  <div class="overlay-content">
+    <div class="overlay-close" onclick="closeStory()">×</div>
+    <div class="tag" id="storyTag"></div>
+    <h2 id="storyTitle"></h2>
+    <p id="storyBody"></p>
+    <a href="#" id="storyLink" class="visit" target="_self">Visit →</a>
+  </div>
+</div>
+
+<script>
+/* ================= HERO PARTICLES — dark, sparse, floating ================= */
+(function(){
+  var canvas = document.getElementById('hero-particles');
+  var ctx = canvas.getContext('2d');
+  var hero = document.querySelector('.hero');
+  function resize(){
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  var particles = [];
+  var MAX = 26;
+
+  function spawn(){
+    if(particles.length >= MAX) return;
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: canvas.height + 10,
+      size: Math.random()*2 + 1,
+      speed: Math.random()*0.4 + 0.15,
+      life: 0,
+      maxLife: Math.random()*400 + 300,
+      opacity: 0
+    });
+  }
+  for(var i=0;i<MAX;i++) spawn();
+
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(function(p){
+      p.y -= p.speed;
+      p.life++;
+      var fadeIn = Math.min(p.life/60,1);
+      var fadeOut = Math.max(0, 1 - Math.max(0,(p.life-(p.maxLife-60))/60));
+      p.opacity = Math.min(fadeIn,fadeOut) * 0.55;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,' + p.opacity + ')';
+      ctx.fill();
+
+      if(p.life > p.maxLife || p.y < -10){
+        p.x = Math.random()*canvas.width;
+        p.y = canvas.height + 10;
+        p.life = 0;
+        p.maxLife = Math.random()*400 + 300;
+      }
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ================= TEXT REVEAL ON SCROLL ================= */
+(function(){
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal-stagger').forEach(function(el){ obs.observe(el); });
+})();
+
+/* ================= LINK LIBRARY ================= */
+/* Images are external — put files into assets/images/
+   Only these three carry a logo (a real logo exists):
+   World Within, Trans African Community, 97 Industry */
+var LINKS = [
+  {
+    tag:"Expression / 01 · Origin",
+    name:"97 Founder",
+    logo:null,
+    image:"assets/images/link-01.png",
+    blurb:"Built alone, against a wall of assumption — that Nigerian meant scam, that solo meant suspect.",
+    story:"Built alone, against a wall of assumption — that Nigerian meant scam, that solo meant suspect. No one came to help build this. It got built anyway. This is where the whole strife began, and where it's still standing.",
+    url:"https://7nine9seven.wixstudio.com/97founder/home-2-1"
+  },
+  {
+    tag:"Expression / 02 · Voice",
+    name:"Trans African Community",
+    logo:"assets/images/logo-trans-community.png",
+    image:"assets/images/link-02.png",
+    blurb:"A code to action for trans African voices — heard, not silenced.",
+    story:"For local trans African people who've been told they should be silent, or shouldn't exist at all. This is the opposite of that — a space where diverse voices are heard as they are, because love never repeats itself, and neither does anyone here.",
+    url:"https://7nine9seven.wixstudio.com/transafricacommunity"
+  },
+  {
+    tag:"Expression / 03 · Emotional Intelligence",
+    name:"First Rate Materials",
+    logo:null,
+    image:"assets/images/link-03.png",
+    blurb:"Books turned into audio, built for anyone — trans or not — who needs to renew their mind daily.",
+    story:"Emotional intelligence, turned into audio — because sitting down to read isn't how everyone learns, but listening while living life is. Built especially as something a trans person can return to when the daily weight of being misgendered starts to wear the body down. Not just for trans people — for anyone who wants to walk the world with a steadier mind.",
+    url:"https://7nine9seven.wixsite.com/first-rate-materials"
+  },
+  {
+    tag:"Expression / 04 · Handwork",
+    name:"97 Industry",
+    logo:"assets/images/logo-97industry.png",
+    image:"assets/images/link-04.png",
+    blurb:"A vision of independent light in every household — starting with my own.",
+    story:"My hands, my vocation, done with everything I have. This carries a real vision: free, sustainable, independent power for every household — no dependency. I know it's possible because some part of me remembers it already happening. I start with my own house first. Then everyone else's.",
+    url:"https://7nine9seven.wixsite.com/97-industry"
+  },
+  {
+    tag:"Expression / 05 · The Hub",
+    name:"97 Mega",
+    logo:null,
+    image:"assets/images/link-05.png",
+    blurb:"Where 97 Art Galaxy, 97 Industry, and 97 Business Hub converge into one.",
+    story:"A collaboration of everything under 97 — Art Galaxy, Industry, Media Core, Business Hub. Still growing, including an in-progress gallery experience (97 Art Galaxy) that will live here once it's ready to be seen properly.",
+    url:"https://97-mega.webflow.io/"
+  },
+  {
+    tag:"Expression / 06 · Consciousness",
+    name:"D7xMight",
+    logo:null,
+    image:"assets/images/link-06.png",
+    blurb:"A map route through consciousness — walking with spirit, one project at a time.",
+    story:"This is where the deeper walk lives — consciousness, spirit, and the Starseed Hunter thread, which speaks directly to neurodivergence as its own kind of Starseed truth. The in-progress Art Galaxy also connects through here.",
+    url:"https://mazienx.github.io/D7xMight/"
+  },
+  {
+    tag:"Expression / 07 · Daily Presence",
+    name:"WhatsApp Channel",
+    logo:null,
+    image:"assets/images/link-07.png",
+    blurb:"Vibration, emotional and spiritual intelligence — daily, practical, real.",
+    story:"Notifications and updates from the Pure Love Network of States. Daily practical reflections on vibration, positivity, and emotional and spiritual intelligence — things you can actually use, not just read.",
+    url:"https://whatsapp.com/channel/0029VaGIeMRCsU9GQIGv1R1e"
+  },
+  {
+    tag:"Expression / 08 · The Network",
+    name:"Pure Love Network of States",
+    logo:null,
+    image:"assets/images/link-08.png",
+    blurb:"Love is diversity. Love is infinite intelligence. This is where that gets built.",
+    story:"The promotional home for everything the network stands for — unity in diversity, understood not as a slogan but as a way of living. This links forward into the Founder page, where the origin story continues.",
+    url:"https://pure-love-network.carrd.co/"
+  },
+  {
+    tag:"Expression / 09 · One Name, Many Doors",
+    name:"Beacons",
+    logo:null,
+    image:"assets/images/link-09.png",
+    blurb:"One link-in-bio, holding every door open at once.",
+    story:"A single entry point into everything else — for anyone who found me through Instagram and wants one place to see it all.",
+    url:"https://beacons.ai/mazien"
+  },
+  {
+    tag:"Expression / 10 · Gathering",
+    name:"Clubhouse — Echoes, Roars, Vibrations",
+    logo:null,
+    image:"assets/images/link-10.png",
+    blurb:"Live rooms tracking the progress of building this community, together.",
+    story:"Where the Pure Love community gathers live — showing the actual progress of the building, not a polished version of it. Paused at times, but never abandoned.",
+    url:"https://www.clubhouse.com/club/echos-roars-vibrations"
+  },
+  {
+    tag:"Expression / 11 · Offered, Not Valued",
+    name:"One Free Graphic",
+    logo:null,
+    image:"assets/images/link-11.png",
+    blurb:"Years of free graphic work, offered to build skill — not competition, not charity.",
+    story:"For years, I offered one free graphic at a time to the trans community — not because I had the finances to give more, but because I didn't, and this was how I made up for that. It was how I sharpened a skill through real practice, one honest interaction at a time. It wasn't received as generosity. It read as competing, when I was only ever expressing excitement without an agenda behind it. Then Facebook came down, and that particular thread of offering stopped being possible the same way. This form is what's left of that season — proof that showing up with what you have, even when it isn't valued back, is still progress. To me, it always was.",
+    url:"https://docs.google.com/forms/d/e/1FAIpQLSfslSJyruHB9VW7p3wY1WZ0u8FwmPkJ-GsKFYCFE7gSAOV7qg/viewform"
+  },
+  {
+    tag:"Expression / 12 · Photography, Reimagined",
+    name:"Universal Awakening",
+    logo:null,
+    image:"assets/images/link-12.png",
+    blurb:"Universal Awakening — proof that spiritual gift are tools that serve the vision, not replace it.",
+    story:"Thoughts from a mind wandering beyond the familiar — exploring love, consciousness, existence, and the quiet revelations that emerge when we dare to question what we thought we knew.A living river of thoughts, questions, and revelations about consciousness, love, existence, and what becomes possible when we begin to see beyond the boundaries we've inherited.",
+    url:"https://awokenamitheuniverse.blogspot.com/2024/07/lets-play-game-seeking-signs-of-love.html"
+  },
+  {
+    tag:"Expression / 13 · Long Before Anyone Noticed",
+    name:"X (Twitter)",
+    logo:null,
+    image:"assets/images/link-13.png",
+    blurb:"Years online, mostly unseen — even within my own community.",
+    story:"Proof of how long I've been here — visible online, yet isolated even within spaces that should have seen me. This account is the record of that.",
+    url:"https://x.com/D7x_Soultext"
+  },
+  {
+    tag:"Expression / 14 · Coming Back",
+    name:"Medium",
+    logo:null,
+    image:"assets/images/link-14.png",
+    blurb:"Writing my way back into visibility, one piece at a time.",
+    story:"A deliberate return to presence — putting words back out into the world after a long stretch of being unseen.",
+    url:"https://medium.com/@avatar.alabi1"
+  },
+  {
+    tag:"Expression / 15 · The Portfolio",
+    name:"97 Nine Seven Presentation",
+    logo:null,
+    image:"assets/images/link-15.png",
+    blurb:"A digital portfolio, and a window into how far the AI gallery has grown.",
+    story:"Beyond the presentation itself, this is proof that the AI-generated work has grown past what was originally imagined — the futures those early images predicted are becoming real now.",
+    url:"https://eseh1alabi-invisible-strength.my.canva.site/97-nine-seven-presentation"
+  },
+  {
+    tag:"Expression / 16 · Under Entertainment",
+    name:"Pure Love Virtual Dating",
+    logo:null,
+    image:"assets/images/link-16.png",
+    blurb:"Harmonious gathering, filed under the entertainment button — built for neurodivergent connection.",
+    story:"A space for people to gather in harmony rather than hierarchy — sitting under the broader Neuro Hub's entertainment category, built specifically with neurodivergent connection in mind.",
+    url:"https://avataralabi1.wixsite.com/pure-love-virtual-da"
+  },
+  {
+    tag:"Expression / 17 · One Tree, Many Branches",
+    name:"Linktree — Pure Love Community",
+    logo:null,
+    image:"assets/images/link-17.png",
+    blurb:"Hosting the Pure Love Network of States and Community, all in one place.",
+    story:"A hub of everything the Pure Love Network supports — including the sites listed below, all standing for the same fight against marginalization.",
+    url:"https://linktr.ee/purelovecomunity"
+  },
+  {
+    tag:"Expression / 18 · Bringing Light to the Overlooked",
+    name:"Virtual Community Hall",
+    logo:null,
+    image:"assets/images/link-18.png",
+    blurb:"A list of websites supported by the Pure Love Community — bringing awareness to people born marginalized, like those with spina bifida.",
+    story:"This exists to bring visibility to people the world too often looks away from — including those born with conditions like spina bifida. Equity, fought for, one awareness at a time.",
+    url:"https://sites.google.com/view/smart-dinamic-designs/virtual-community-hall"
+  },
+  {
+    tag:"Expression / 19 · Freedom of Speech",
+    name:"Podcast Zone",
+    logo:null,
+    image:"assets/images/link-19.png",
+    blurb:"Sign language podcasts, and every voice this community is building room for.",
+    story:"A pillar for freedom of speech in every form it takes — including sign language. Built for people not interested in class, hierarchy, or making anyone feel less than.",
+    url:"https://sites.google.com/view/podcast-zone/home"
+  },
+  {
+    tag:"Expression / 20 · Still Growing",
+    name:"Entertainment Hub",
+    logo:null,
+    image:"assets/images/link-20.png",
+    blurb:"Entertainment made specifically for the neurodivergent mind — still being built, on purpose, slowly.",
+    story:"An active, unfinished site — intentionally taking its time. Built to boost emotional and spiritual intelligence through entertainment that actually understands neurodivergence, rather than trying to correct it.",
+    url:"https://avataralabi1.wixstudio.com/entertainment-hub"
+  },
+  {
+    tag:"Expression / 21 · A Home for Every Tool",
+    name:"World Within",
+    logo:"assets/images/logo-world-within.png",
+    image:"assets/images/link-21.png",
+    blurb:"Not a fix — a personal home page for every tool a neurodivergent mind actually needs.",
+    story:"Neurodivergent minds aren't broken, they're diverse — and diversity never repeats itself. This is the promise: a personal home page holding every tool you need, so you never have to feel scattered trying to find them. This is the flagship — the platform everything else on this page ultimately connects back to.",
+    url:"https://egentspirit-collab.github.io/world-within/index.html"
+  },
+  {
+    tag:"Expression / 22 · Understanding, Not Correction",
+    name:"Neuro Hub",
+    logo:null,
+    image:"assets/images/link-22.png",
+    blurb:"For neurodivergent minds — not a system to fix you, but tools built around how you actually think.",
+    story:"Neurodivergence is a gift — but only explored fully from a genuinely positive place. This isn't about correcting anyone. It's about giving neurodivergent minds tools built around how they actually think, not how the world expects them to.",
+    url:"https://avataralabi1.wixsite.com/pure-love-virtual-da/blog"
+  },
+  {
+    tag:"Expression / 24 · One Story, In Pictures",
+    name:"Instagram",
+    logo:null,
+    image:"assets/images/link-24-instagram.png",
+    blurb:"The visual thread — where the story gets told one image at a time.",
+    story:"A running record of the work as it happens, told visually rather than in words. If Twitter is proof of how long I've been here, this is proof of what I've actually been making the whole time.",
+    url:"https://www.instagram.com/dinamicalabi/"
+  },
+  {
+    tag:"Expression / 25 · A Year of Visible Change",
+    name:"YouTube",
+    logo:null,
+    image:"assets/images/link-25-youtube.png",
+    blurb:"A year of visual evidence — from dying inside to becoming the strongest man in my compound.",
+    story:"Opened at the very end of a season when I was still dying, before the growth began. What's documented here is a year of visible, drastic change — not from luck, but from showing up to work out every single day, giving my body a reason to keep giving me energy back. This is proof, not a highlight reel: the actual shape of what daily discipline built.",
+    url:"https://youtube.com/@mazien7archiex"
+  },
+  {
+    tag:"Expression / 26 · Quick, Unfiltered",
+    name:"TikTok",
+    logo:null,
+    image:"assets/images/link-26-tiktok.png",
+    blurb:"The fastest, least polished window into all of this — real-time, unedited.",
+    story:"Short-form, in-the-moment expression — less curated than everywhere else, closer to whatever I'm actually feeling that day.",
+    url:"https://vm.tiktok.com/ZS9kBFK8YGdpc-z8slL/"
+  },
+  {
+    tag:"Expression / 23 · Blueprints",
+    name:"What's Being Built",
+    logo:null,
+    image:"assets/images/link-23.png",
+    blurb:"A portfolio of paused work, held back only by resources — never by lack of vision.",
+    story:"Not everything here is finished yet, and that's honest, not a weakness. This is the actual portfolio of what's still in progress — a Pure Love Community app, a Self-Mastery Toolkit app, and the fuller map of it all in Neurodivergent Architects of New Worlds. Paused because of real limitation, not lost ambition. Part of why World Within exists is to finance exactly this — so each of these can finally come to life in its own right, on its own timeline.",
+    url:"https://www.notion.so/The-Neuro-Divergents-Architects-of-New-Worlds-1e2ba75b91b48004b355f69e0f7e70d9"
+  }
+];
+
+var grid1 = document.getElementById('grid1');
+LINKS.forEach(function(item){
+  var card = document.createElement('div');
+  card.className = 'card';
+  card.onclick = function(){ openStory(item); };
+  var logoHtml = item.logo ? '<img src="'+item.logo+'" class="card-logo" alt="">' : '';
+  card.innerHTML =
+    logoHtml +
+    '<div class="tag">'+item.tag+'</div>' +
+    '<h3>'+item.name+'</h3>' +
+    '<p>'+item.blurb+'</p>' +
+    '<span class="open">Open the story →</span>';
+  grid1.appendChild(card);
+});
+
+function openStory(item){
+  document.getElementById('storyTag').textContent = item.tag;
+  document.getElementById('storyTitle').textContent = item.name;
+  document.getElementById('storyBody').textContent = item.story;
+  document.getElementById('storyLink').href = item.url;
+  document.getElementById('storyOverlay').classList.add('show');
+}
+function closeStory(){
+  document.getElementById('storyOverlay').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
